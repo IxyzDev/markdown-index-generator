@@ -1,6 +1,18 @@
 import os
 import argparse
 
+class Debug(object):
+    enabled = False
+
+    @classmethod
+    def enable(cls):
+        cls.enabled = True
+
+    # @classmethod
+    # def log(cls, env: simpy.Environment, msg: str):
+    #     if cls.enabled:
+    #         print(f"{env.now:5.4f}:\t{msg}")
+
 class Parametros(object):
     def __init__(self):
         self.direccion = None
@@ -10,7 +22,7 @@ class Parametros(object):
     # Método para parsear los argumentos de la línea de comandos
     def _parsear_argumentos(self):
         parser = argparse.ArgumentParser(description="Procesa un archivo Markdown y le genera un indice.")
-        parser.add_argument("--direccion", type=self.validar_direccion_y_markdown,
+        parser.add_argument("-d", "--direccion", type=self.validar_direccion_y_markdown,
                             required=True, help="Archivo Markdown a procesar.")
        
         parser.add_argument("--elog", action='store_true',
@@ -38,3 +50,17 @@ class Parametros(object):
         direccion = self.validar_direccion(direccion)   # Valida que sea una dirección de archivo válida
         direccion = self.validar_markdown(direccion)    # Valida que sea un archivo Markdown
         return direccion
+    
+    def obtener_parametros(self):
+        return self.direccion, self.elog
+
+
+def main():
+    parametros = Parametros()
+    direccion, elog = parametros.obtener_parametros()
+    
+    if (elog):
+        Debug.enable()
+    
+if __name__ == "__main__":
+    main()
